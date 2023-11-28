@@ -1,0 +1,85 @@
+﻿@using Airport.Shared.Models;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common
+
+@model X.PagedList.IPagedList<Airplane>
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+@using (Html.BeginForm())
+{
+    <p>Введите название машины: </p>
+    @Html.TextBox("searchSpecifications", ViewBag.CurrentFilter as string)
+    <p><input type="submit" value="Отправить" /></p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-airplaneSort="@ViewBag.Mark">
+                    Mark
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-airplan eSort="@ViewBag.Capacity">
+                    Capacity
+                </a>
+            </th>
+            <th>
+                Type airplane
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-airplaneSort="@ViewBag.Specifications">
+                    Specifications
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-airplaneSort="@ViewBag.DateLastRepair">
+                    DateLastRepair
+                </a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Mark)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Capacity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TypeAirplane.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Specifications)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateLastRepair)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, airplaneSort = ViewBag.CurrentSort, currentFilter=ViewBag.CurrentFilter }), new PagedListRenderOptions {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }
+})
+

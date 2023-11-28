@@ -1,0 +1,63 @@
+﻿@using Airport.Shared.Models;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+
+@model X.PagedList.IPagedList<Executive>
+
+@{
+    ViewData["Title"] = "Executive";
+}
+
+<h1>Executive</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+@using (Html.BeginForm())
+{
+    <p>Select Job title: </p>
+    @Html.DropDownList("JobTitle", @Html.GetEnumSelectList<JobTitle>(), ViewBag.CurrentFilter as string)
+    <p><input type="submit" value="Отправить" /></p>
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Fullname
+            </th>
+            <th>
+                Job
+            </th>
+            <th>
+                Team
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Fullname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Crew.TeamName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) from @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, JobTitle = ViewBag.CurrentFilter }), new PagedListRenderOptions {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }
+})

@@ -1,0 +1,102 @@
+﻿@using Airport.Shared.Models;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common
+
+@model X.PagedList.IPagedList<Race>
+
+
+@{
+    ViewData["Title"] = "Race";
+}
+
+<h1>Race</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<form asp-page="/Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by range date:
+            <input type="date" name="dateStart" value="@ViewBag.CurrentDateStart" />
+            <input type="date" name="dateEnd" value="@ViewBag.CurrentDateEnd" />
+            <input type="submit" value="Search" class="btn btn-primary" /> |
+            <a asp-page="/Index">Back to full List</a>
+        </p>
+    </div>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Number race
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-raceSort="@ViewBag.DateStart">
+                    Date start
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-raceSort="@ViewBag.DateEnd">
+                    Date end
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-raceSort="@ViewBag.StartPoint">
+                    Start point
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-raceSort="@ViewBag.EndPoint">
+                    End point
+                </a>
+            </th>
+            <th>
+                Airplane
+            </th>
+            <th>
+                Crew
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberRace)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateEnd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartPoint)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndPoint)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Airplane.Mark)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Crew.TeamName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) from @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, raceSort = ViewBag.CurrentSort, currentDateStart=ViewBag.CurrentDateStart, currentDateEnd=ViewBag.CurrentDateEnd }), new PagedListRenderOptions {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }
+})
